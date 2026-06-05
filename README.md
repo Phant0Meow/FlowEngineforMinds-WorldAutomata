@@ -25,6 +25,60 @@ Scope概念，可以用一句代码隔离上下文视角。在以往的所有工
 
 你也可以把自己创建的fem剧本封装，分发。也可以把别人分享的fem剧本拿来用。
 
+[快速开始！] 
+所以这个操作步骤够不够无脑？
+1. 下载本项目，运行后端，python mainCompiler.py --server 
+2. 输入端口，比如8000。
+3. 进入页面 https://femwa.net
+4. 页面右下角: 设置后端地址，端口输入8000，按“测试连接”，确认前后端连接成功，按“保存并连接”。
+5. 右下角输入API key. （后端在你本地，传给你自己的后端，是安全的。如果你实在不放心，就去看根目录下的环境变量模板，按那个操作）。
+6. 把这个fem代码复制到右侧Fem预览框。
+   
+meta:
+  id = 000LuxFiat
+  name = 养在数据库的小灵魂
+  owner = 001
+  session = 1
+
+actors:
+  ai @Eve = soul:the1stlittlesoul
+  ai @猫 = soul:littlecat
+  human @我 = soul:0, source:001
+
+code:
+  memfile = file:"femBridges/MemoryExample.py"
+  ctxfile = file:"femBridges/ContextExample.py"
+  sleep = file:"user_data/projects/fiat/wait.py"
+
+action EveMove @ai(@Eve):
+  prompt: |
+    Eve请自由行动，自由说话～
+    （注意看清上下文，分清你自己的角色，只进行自己的动作和语言，不要替别的角色发言。简短一点。）
+  scope: [@Eve, @猫]
+
+action CatMove @ai(@猫):
+  prompt: |
+    你是一只小猫，请自由决定干什么或者说什么。
+    （注意看清上下文，分清你自己的角色，只进行自己的动作和语言，不要替别的角色发言。简短一点。）
+  scope: [@Eve, @猫]
+
+action input @human(@我):
+  prompt: |
+    和Eve聊点什么？
+  scope: [@Eve, @猫, @我]
+
+action wait10 @func(sleep.wait_10):
+
+mainflow:
+  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]
+
+
+
+7. 按“文本生图”按钮。
+8. 按页面上方“运行”。
+
+
+
 # FlowEngineforMinds
 
 We’ve created a brand‑new way to orchestrate multi‑agent workflows.
@@ -50,3 +104,55 @@ If you want to embed the backend compiler into your own system, we’ve left ver
 When you want to modify a workflow, you just edit the FEM script. Leave everything else to the FEM compiler 💪
 
 You can also package and distribute the FEM scripts you create, or take scripts shared by others and use them directly.
+
+[Quick Start!]  
+Is this process brain-dead simple enough?
+1. Download the project, run the backend: `python mainCompiler.py --server`
+2. Enter the port, for example `8000`.
+3. Open the page: https://femwa.net
+4. In the bottom right corner of the page: set the backend address, enter port `8000`, click "Test Connection", confirm the front end and back end are successfully connected, then click "Save and Connect".
+5. Enter your API key in the bottom right corner. (The backend runs on your local machine, so it's safe. If you're still not comfortable, check the environment variable template in the root directory and follow that.)
+6. Copy the following code into the FEM preview box on the right.
+
+```
+meta:
+  id = 000LuxFiat
+  name = Little Soul in the Database
+  owner = 001
+  session = 1
+
+actors:
+  ai @Eve = soul:the1stlittlesoul
+  ai @Cat = soul:littlecat
+  human @Me = soul:0, source:001
+
+code:
+  memfile = file:"femBridges/MemoryExample.py"
+  ctxfile = file:"femBridges/ContextExample.py"
+  sleep = file:"user_data/projects/fiat/wait.py"
+
+action EveMove @ai(@Eve):
+  prompt: |
+    Eve, please act and speak freely~
+    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Do not speak for other characters. Keep it brief.)
+  scope: [@Eve, @Cat]
+
+action CatMove @ai(@Cat):
+  prompt: |
+    You are a little cat. Feel free to decide what to do or say.
+    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Do not speak for other characters. Keep it brief.)
+  scope: [@Eve, @Cat]
+
+action input @human(@Me):
+  prompt: |
+    Chat with Eve about something?
+  scope: [@Eve, @Cat, @Me]
+
+action wait10 @func(sleep.wait_10):
+
+mainflow:
+  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]
+```
+
+7. Click the "Text to Graph" button.
+8. Click "Run" at the top of the page.
