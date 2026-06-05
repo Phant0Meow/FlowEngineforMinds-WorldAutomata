@@ -21,6 +21,10 @@ Scope概念，可以用一句代码隔离上下文视角。在以往的所有工
 
 如果你想把后端编译器嵌入你自己的系统，我们留了很方便的接口，你只要接入自己的记忆模块，上下文模块和LLM模块，FEM就可以在你的系统里无缝跑起来。
 
+当你想修改工作流流程，你只需要改改fem剧本，其他一切都交给fem编译器帮你解决～
+
+你也可以把自己创建的fem剧本封装，分发。也可以把别人分享的fem剧本拿来用。
+
 # FlowEngineforMinds
 
 We’ve created a brand‑new way to orchestrate multi‑agent workflows.
@@ -46,8 +50,3 @@ If you want to embed the backend compiler into your own system, we’ve left ver
 When you want to modify a workflow, you just edit the FEM script. Leave everything else to the FEM compiler 💪
 
 You can also package and distribute the FEM scripts you create, or take scripts shared by others and use them directly.
-
-
-当你想修改工作流流程，你只需要改改fem剧本，其他一切都交给fem编译器帮你解决～
-
-你也可以把自己创建的fem剧本封装，分发。也可以把别人分享的fem剧本拿来用。
