@@ -111,8 +111,6 @@ actors:
   human @我 = soul:0, source:001
 
 code:
-  memfile = file:"femBridges/MemoryExample.py"    // 外接记忆模块，你可以接自己喜欢的记忆方案（或者期待一下我的另一个项目XIHER记忆系统？）
-  ctxfile = file:"femBridges/ContextExample.py"   // 外接上下文模块，你可以自己修改。
   sleep = file:"user_data/projects/fiat/wait.py"  // 外接Python函数, 方便你扩展
 
 action EveMove @ai(@Eve):
@@ -299,8 +297,6 @@ actors:
   human @Me = soul:0, source:001
 
 code:
-  memfile = file:"femBridges/MemoryExample.py"    // External memory module — plug in your favorite memory solution (or look forward to my other project, XIHER memory system?)
-  ctxfile = file:"femBridges/ContextExample.py"   // External context module — you can modify it.
   sleep = file:"user_data/projects/fiat/wait.py"  // External Python function — easy to extend
 
 action EveMove @ai(@Eve):
