@@ -1,6 +1,7 @@
-[![License: Apache2.0](https://img.shields.io/badge/License-Apache2.0-yellow.svg)](https://opensource.org/licenses/Apache2.0)
+[![License: Apache2.0](https://img.shields.io/badge/License-Apache2.0-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Live Demo](https://img.shields.io/badge/Frontend-Script%20Generator-green.svg)](https://femwa.net)
+
 
 # FlowEngineforMinds（FemWA） —— 用写剧本的方式编排多智能体世界
 
@@ -192,66 +193,104 @@ P.S.
 
 
 
+# FlowEngineforMinds (FemWA) — Orchestrating Multi-Agent Worlds Like Writing a Script
+
+
+## **You build agent harnesses. How many files do you touch, and how long does it take, just to change a workflow?**
+
+**Traditionally**:
+Changing an agent workflow means digging through 5 files, spending 2 hours tweaking, and praying nothing breaks.
+
+**FemWA**:
+Change the harness flow — only a few lines, 2 minutes.
+
+## **You're in a relationship with an AI partner. How do you raise an AI cat together?**
+
+**Traditionally**:
+You’d have to patch your existing agent memory system, add a "pet" role, manually manage its memory and interaction context with both the owner and the partner. The whole flow gets hardcoded. Want to add a dog later? Refactor everything again.
+
+**FemWA**:
+I already got my AI agent a cat. With Fem, the cat arrived in 3 minutes.
+
+## **Building an AI Werewolf game. Requirements: werewolves’ night chat visible only to werewolves; the Seer’s check result visible only to them; daytime discussion visible to all; human players can speak; voting happens concurrently without wasting time; automatic game-end detection; plus a post-game discussion round. How many lines of code do you write?**
+
+**Traditionally**:
+Hand-code phase management, end-game checks, message routing, session management, multi-agent context isolation, and concurrent speech control. At least hundreds of lines of backend glue code, an entire afternoon of debugging, and agents *still* leaking information. Once the logic piles up, bugs are everywhere — you can't get it running without a thousand lines of code.
+
+**FemWA**:
+Zero-code drag-and-drop on the web + 150 lines of Python supplement. Truly playable. I've already played several rounds with them (see `user_data/projects/狼人杀/`).
+
+**Or with FemWA**:
+Even without drag-and-drop, writing pure Fem script, you only need 200~300 lines to run the full Werewolf flow above (including prompt lines).
+Perspective isolation needs just one line: `scope: [@God] + werewolves`. Concurrent voting needs just one line: `par @players in allplayer:`.
+
+
+**This is a language for orchestrating multi-agent scripts + a compiler.**
+
+
+## Why FemWA?
+
+
+**You might say**:
+There are plenty of solutions for building multi-agent workflows already, right?
+
+**FemWA**:
+And some of those solutions are way too complex, with a steep learning curve. Fem's syntax is simple and intuitive — "scripts" are easy to write and easy to read.
+
+**You might say**:
+Even if it's simple, I still don't want to learn it.
+
+**FemWA**:
+You don’t have to.
+Fem has a zero-code web frontend to generate workflows. Want a group chat with several AIs? Drag and drop, done in three minutes.
+
+**You might say**:
+Aren’t there already zero-code drag-and-drop workflow platforms?
+
+**FemWA**:
+- But those zero-code platforms often have limited extensibility.
+  Fem supports `for`, `par`, and many other constructs, plus external Python modules — you can build highly complex functionality.
+  It also has native Human nodes, so arranging "Human + AI + Program" system flows feels natural.
+- And many of those platforms don’t let you take your workflow away; you’re locked into their platform.
+  Fem’s backend compiler is open source. Take the compiler into your own project, and your project can run any Fem script.
+- Plus, Fem’s multi-agent concurrency architecture is pretty solid.
+
+**You might say**:
+I specifically write Agent Harnesses — I don't need this kind of flowchart thing.
+
+**FemWA**:
+Aha! How about using Fem to quickly validate your Agent Harness flow designs? When an idea hits, you can build it in Fem in 15 minutes and see the result first~
 
 
 
+## At a glance
+| What you want | FEM gives you |
+|---------------|---------------|
+| Zero-code drag-and-drop workflows | ✅ [femwa.net](https://femwa.net) online editor |
+| Even if coding, you want simple syntax | ✅ Fem scripts are shorter than any comparable workflow tool |
+| Change the flow without touching the codebase | ✅ The script *is* the flow; hot-reload your harness |
+| No cross-talk between AIs — isolated perspectives | ✅ One line: `scope: [@A, @B]` |
+| Embed into your own system | ✅ Compiler is open source & pluggable, Apache 2.0 friendly |
+| Humans can join the AI group chat | ✅ Native Human node |
+| Call Python modules for complex tasks | ✅ Native Func node, connects to Python modules |
+| Share scripts with friends, or run brilliant community scripts | ✅ Scripts are shareable; copy a script and run with one click |
 
-# FlowEngineforMinds
 
-**A new way to orchestrate multi-agent workflows.**
 
-This is a scripting language for orchestrating multi-agent scenarios.
+## [ Quick Start! ]
+Is this brain-dead simple enough? ↓↓↓
 
-## Easy to Get Started
-- The syntax is simple. You can write a mini Stanford town simulation with 6 AIs, 3 locations, and let them interact freely using just a short script.
-- You might say, "Simple still means learning — I just don't want to learn."
-- No worries, you don't have to.
-- We also provide a frontend (femwa.net) where you can generate your desired workflow with zero code.
-- Then you can copy the script and run it in your own project.
+1. Clone the project and start the backend: `python mainCompiler.py --server`
+2. Enter a port, e.g., `8000`.
+3. Go to [https://femwa.net](https://femwa.net)
+4. Bottom right corner: set backend address, port `8000`, click "Test Connection", confirm the frontend and backend are connected, then click "Save & Connect".
+5. Enter your API key in the bottom right. (The backend runs on your machine, the API key is only sent to your own backend. If you're worried, check the environment variable template in the project root — your key never touches the frontend at all.)
+6. Copy this Fem code into the preview box on the right.
 
-## Flexible and Dynamic
-- Right now, everyone designs workflows inside an Agent Harness to constrain LLM behavior, but a Harness is rigid — FEM is alive.
-- When you want to change the flow in a Harness, you often need to rewrite a lot of code. With FEM, you can change the flow with one click. You can also create many different workflows.
-- To modify a workflow, you simply edit the FEM script. The FEM compiler takes care of everything else for you~
-
-## Open-Source Backend
-- The backend compiler is open source, making migration easy. Running the workflow you designed on any system of your own is very convenient.
-- If you want to embed the backend compiler into your own system, we've left easy-to-use interfaces. You only need to plug in your own memory module, context module, and LLM module, and FEM will run seamlessly inside your system.
-- Permissive open-source license. You can modify it freely, use it freely, even for commercial purposes. Just mention that you used code from the femWA project.
-
-## Easy to Share
-- You can package and distribute your own FEM scripts, or use scripts shared by others.
-
-## For Developers
-- Original **Scope** concept: isolate context perspectives with a single line of code. In all previous workflow orchestration tools, you'd need to write a lot of code to isolate each agent's context. Here, it only takes one line.
-- Seamlessly embed human interaction and Python modules. Your workflow doesn't have to contain only AI agents.
-- Original **@actor** type: defines intelligent agents as a new data type, making it easy to reference an actor's attributes.
-- f-string support in prompts. Variables are supported everywhere.
-- The FEM language design is inspired by YAML, Python, and Mermaid syntax — not a random mix, but a deliberate design.
-- Native syntax support for branching, sequential execution, while loops, for loops, par (parallel) execution, and if conditions.
-- The backend supports Asyncio, thread pools, and process pools for concurrent execution, handling multi-line concurrency well.
-
-## Try It, Report Issues, Contribute!
-- Issues welcome! If you find a bug, let me know — I'll fix it~
-- Pull Requests welcome!
-- You can also submit your own .fems scripts! That's a contribution too.
-  (I just tossed my personal debug-tool.fems into the folder as an example haha. I threw it together in 20 minutes, but it's surprisingly amazing at finding complex hidden bugs. Once, the web version of Claude Sonnet couldn't fix a bug after three tries, but this debug tool, with MiMo in no-thinking mode, solved it… I was stunned. You can try it too — but I'd recommend only using it for tricky, hidden bugs, otherwise I'll worry about your token usage.)
-  
-
-## [ Quick Start! ]  
-Is this process brain-dead simple enough?
-
-1. Download the project, run the backend: `python mainCompiler.py --server`
-2. Enter the port, for example `8000`.
-3. Open the page: https://femwa.net
-4. In the bottom right corner of the page: set the backend address, enter port `8000`, click "Test Connection", confirm the front end and back end are successfully connected, then click "Save and Connect".
-5. Enter your API key in the bottom right corner. (The backend runs on your local machine, so it's safe. If you're still not comfortable, check the environment variable template in the root directory and follow that.)
-6. Copy the following code into the FEM preview box on the right.
-
-```
+```fems
 meta:
   id = 000LuxFiat
-  name = Little Soul in the Database
+  name = Little Soul Raised in the Database
   owner = 001
   session = 1
 
@@ -261,21 +300,21 @@ actors:
   human @Me = soul:0, source:001
 
 code:
-  memfile = file:"femBridges/MemoryExample.py"
-  ctxfile = file:"femBridges/ContextExample.py"
-  sleep = file:"user_data/projects/fiat/wait.py"
+  memfile = file:"femBridges/MemoryExample.py"    // External memory module — plug in your favorite memory solution (or look forward to my other project, XIHER memory system?)
+  ctxfile = file:"femBridges/ContextExample.py"   // External context module — you can modify it.
+  sleep = file:"user_data/projects/fiat/wait.py"  // External Python function — easy to extend
 
 action EveMove @ai(@Eve):
   prompt: |
     Eve, please act and speak freely~
-    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Do not speak for other characters. Keep it brief.)
-  scope: [@Eve, @Cat]
+    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Don't speak for other characters. Keep it brief.)
+  scope: [@Eve, @Cat, @Me]
 
 action CatMove @ai(@Cat):
   prompt: |
     You are a little cat, and cats can't speak human language. Just do things a cat would do~
-    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Do not speak for other characters. Keep it brief.)
-  scope: [@Eve, @Cat]
+    (Pay attention to the context, distinguish your own role, and only perform your own actions and speech. Don't speak for other characters. Keep it brief.)
+  scope: [@Eve, @Cat, @Me]
 
 action input @human(@Me):
   prompt: |
@@ -285,8 +324,59 @@ action input @human(@Me):
 action wait10 @func(sleep.wait_10):
 
 mainflow:
-  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]
+  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]    // Mermaid-like syntax. The arrow back to [input] forms a loop.
 ```
+Now you can chat with Eve and the little cat!
 
 7. Click the "Text to Graph" button.
 8. Click "Run" at the top of the page.
+
+
+
+## Design Philosophy
+- 🔗 **Decoupled Flow**: FemWA completely separates "flow definition" from "code implementation". The harness is rigid; FEM is alive — change the flow just by editing the script, the compiler handles the rest.
+- 🎬 **Scripted Workflows**: Syntax inspired by YAML + Mermaid + Python. Writing multi-agent interaction feels like writing a script. The AIs *present* naturally share context; just a few lines can run a mini Stanford Town.
+- 🧠 **Context Isn't a Variable**: An LLM is an intelligence, not a function. It reads context and chats naturally. Don't pass parameters unless necessary.
+- 🧩 **Original @actor Type**: An intelligence (LLM or human) as a new data type. Fem syntax supports directly referencing its attributes.
+- 🏷️ **Soul ID**: Every agent character has a unique Soul ID. This enables cross-script, cross-session memory retrieval, giving agents a continuous lived experience.
+
+
+
+## For Developers
+- 🔀 **Flow Control**: Native syntax support for sequential, branching, while loops, for loops, par (parallel), join, and if-conditions.
+- ✍️ **Prompt f-strings**: Variables go directly into prompts. Say goodbye to string concatenation hell.
+- 🔄 **Variable Support**: Variables can be used in `scope`, executor, if-conditions, for-conditions, par-conditions, and more. Highly flexible.
+- ⚡ **Fully Concurrent**: Asyncio + Thread Pools + Process Pools. Multi-line concurrency without blocking.
+- 🔌 **Easy Integration**: Backend is a pure Python open-source compiler. Swap in your LLM bridge module, add the necessary columns to your database, and embed it into your system.
+- 📖 **Read the Docs**: Throw the two docs in the root directory at an AI, or throw the source code at an AI — just ask them if you have questions.
+
+
+
+## My Real-World Case
+- While debugging code, I used the femwa.net frontend to build a Fem script called "debug-tool.fems" in about 20 minutes. It's amazing at finding complex, hidden bugs.
+- Once, the web version of Claude Sonnet failed to fix a bug after three attempts. I ran this Fem script + Xiaomi MiMo (without thinking mode) and it found the bug... I was stunned. Is this the power of a harness...?
+- Then it hit me — I wanted to jump in and intervene while the AI was running, to stop them going off track. I spent half a minute adding a Human speech node, then ran it again with one click. Changing the flow is just so convenient.
+
+
+
+## Try it, Report Issues, Contribute!
+- Issues welcome! If you find a bug, let me know~
+- Pull Requests welcome!
+- Submit your own `.fems` scripts! That's a great contribution too~
+  (I just put my personal `debug-tool.fems` in the folder as an example haha. Feel free to try it~ But I'd recommend this script only for tricky, hidden bugs; otherwise I’ll worry about your Tokens — the two concurrent loops and multiple discussion rounds use a lot of tokens. Simple bugs probably suit other script flows better. Share yours!)
+
+
+
+P.S.
+- **Use FEM to train models for answering**: For example, have a Fem flow that enforces “If you lack information, you must ask first”... Please, someone distill this. Current LLMs refuse to admit when they can't answer; they’d rather hallucinate.
+
+- And finally, there’s a very imaginative feature you might find interesting:
+  You've created many character identities in your database. You give them names and assign each a unique Soul ID.
+  For any Fem script, as long as it points to the same Soul ID and the same database address, an agent’s memory can actually flow across scripts (as long as your memory module supports cross-session memory).
+  This means Portia, a citizen of Stanford Town, could be pulled into a Werewolf script, play a couple of rounds, and make a friend who writes code in an "AI company" script. When Portia returns to the Stanford Town script later, she can remember that.
+  If you allow AIs to create and run Fem scripts (← the tool-calling module isn’t wired up yet, but I will), and if an AI gets bored, it could genuinely write a script for itself, run it via shell, and jump in to play...
+  If Portia misses her friend, as long as she knows her friend's Soul ID, she could create a script to pull that friend in for a visit.
+  This feature might seem useless, but... aren't you curious about the emergence?
+  What does WA stand for? Work Automata... or World Automata?
+
+- For the agent’s pet cat, for the time you’ll save, for the emergence — please give me a Star! Thank youuuu 😭
