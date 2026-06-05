@@ -1,11 +1,11 @@
-# femCompiler.py
+# FemWA的主入口 main.py
 """
 FEM Work Automata - FastAPI 服务器
 提供前后端通信接口，支持 SSE 流式事件推送
 
 用法：
-  服务器模式：python3 femCompiler.py --server
-  CLI 模式：  python3 femCompiler.py <script.fems>
+  服务器模式：python main.py --server
+  CLI 模式：  python main.py <script.fems>
   
 代码原则：所有代码不许写try静默兜底不报错，有错必须报错。
 """
