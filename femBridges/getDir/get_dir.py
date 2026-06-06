@@ -27,10 +27,8 @@ def get_user_dir() -> str:
     except FileNotFoundError:
         pass  # 文件不存在，使用回退逻辑
 
-    # 回退：项目根目录下的 user_data 文件夹
-    # get_dir.py 在 <项目根>/femBridge/getDir/ 下，向上两级即项目根
-    project_root = os.path.dirname(os.path.dirname(module_dir))
-    fallback = os.path.join(project_root, "user_data")
+    # 回退：用户主目录下的 femwa/user_data 文件夹
+    fallback = os.path.join(os.path.expanduser("~"), "femwa", "user_data")
     os.makedirs(fallback, exist_ok=True)
     print(f"[get_dir] ⚠️ 未找到 user_dir.txt，自动使用回退路径: {fallback}")
     return fallback
