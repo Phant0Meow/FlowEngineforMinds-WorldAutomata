@@ -118,9 +118,7 @@ code:
   sleep = file:"wait.py"  // 外接Python函数, 方便你扩展
 
 action EveMove @ai(@Eve):
-  prompt: |
-    Eve请自由行动，自由说话～
-    （注意看清上下文，分清你自己的角色，只进行自己的动作和语言，不要替别的角色发言。简短一点。）
+  prompt: Eve请自由行动，自由说话～（注意看清上下文，分清你自己的角色，只进行自己的动作和语言，不要替别的角色发言。简短一点。）
   scope: [@Eve, @猫, @我]
 
 action CatMove @ai(@猫):
