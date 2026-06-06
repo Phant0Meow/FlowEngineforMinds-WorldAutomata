@@ -118,3 +118,4 @@ def parse_assign_syntax(expr: str, var_name: str = ''):
         try:
             return ('increment', -float(m.group(1)))
         except ValueError:
+            return ('increment', m.group(1))

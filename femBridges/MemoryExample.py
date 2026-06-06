@@ -3,6 +3,7 @@ femBridges/MemoryExample.py — Memory 检索实现
 ===============================================
 跨 session 提取对话记忆，排除当前 session，基于 soul/user scope 过滤。
 返回格式化文本供 model 作为记忆参考。
+代码原则：所有代码不许写try静默兜底不报错，有错必须报错。
 """
 
 import sys

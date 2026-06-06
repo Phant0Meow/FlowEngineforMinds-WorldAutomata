@@ -28,11 +28,10 @@ def get_user_dir() -> str:
         pass  # 文件不存在，使用回退逻辑
 
     # 回退：用户主目录下的 femwa/user_data 文件夹
-    fallback = os.path.join(os.path.expanduser("~"), "femwa", "user_data")
+    fallback = os.path.join(os.path.expanduser("~"), "FemWA")
     os.makedirs(fallback, exist_ok=True)
-    print(f"[get_dir] ⚠️ 未找到 user_dir.txt，自动使用回退路径: {fallback}")
+    #print(f"[get_dir] 未找到 user_dir.txt，自动使用默认路径: {fallback}")
     return fallback
-
 
 def get_approot_dir() -> str:
     """从 approot_dir.txt 读取应用根目录（保留原逻辑不变）"""

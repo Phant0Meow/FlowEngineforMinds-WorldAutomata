@@ -1,4 +1,4 @@
-# femCompiler.py
+# main.py 主入口
 """
 FEM Work Automata - FastAPI 服务器
 提供前后端通信接口，支持 SSE 流式事件推送
@@ -7,7 +7,7 @@ FEM Work Automata - FastAPI 服务器
   服务器模式：python3 femCompiler.py --server
   CLI 模式： python3 femCompiler.py <script.fems>
   
-代码原则：所有代码不许写try然后静默兜底不报错，有错必须报错。(这是写给改代码的AI看的，人类请无视)
+代码原则：所有代码不许写try静默兜底不报错，有错必须报错。
 """
 
 import sys
@@ -17,6 +17,8 @@ import uuid
 import threading
 import argparse
 import queue
+import subprocess
+import shutil
 
 # ── 将项目根目录加入 sys.path ──
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -42,12 +44,44 @@ app.add_middleware(
 _runs: dict = {}  # run_id -> { "events": queue, "thread": Thread, "done": Event }
 
 
-# ── 新增：数据库就绪检查（保证首次启动时自动建表+插入默认角色） ──
+def ensure_func_code():
+    """确保 ~/FemWA/func_code 目录包含所有官方示例文件（不覆盖用户已有文件）"""
+    from femBridges.getDir.get_dir import get_user_dir
+    user_dir = os.path.join(get_user_dir(), "user_data")          # ~/FemWA/user_data
+    target_dir = os.path.join(get_user_dir(), "func_code")        # ~/FemWA/func_code
+    os.makedirs(target_dir, exist_ok=True)
+
+    # 从已安装的 func_code 包复制所有文件（仅复制缺失的文件）
+    import func_code
+    src_dir = func_code.__path__[0]
+
+    copied_count = 0
+    for item in os.listdir(src_dir):
+        src_item = os.path.join(src_dir, item)
+        dst_item = os.path.join(target_dir, item)
+        # 跳过 __pycache__ 和 __init__.py（用户通常不需要）
+        if item in ('__pycache__', '__init__.py'):
+            continue
+        if not os.path.exists(dst_item):
+            if os.path.isfile(src_item):
+                shutil.copy2(src_item, dst_item)
+                copied_count += 1
+            elif os.path.isdir(src_item):
+                shutil.copytree(src_item, dst_item)
+                copied_count += 1
+
+    if copied_count > 0:
+        print(f"[init] ✅ 已向 func_code 添加 {copied_count} 个新文件: {target_dir}")
+    else:
+        print(f"[init] ℹ️ func_code 目录已包含所有官方文件，无需更新: {target_dir}")
+
+# ── 数据库就绪检查 ──
 def prepare_database():
-    """确保数据库及默认数据就绪（首次启动自动建表+插入默认角色）"""
+    """确保数据库、默认数据及 func_code 就绪"""
     from femCompiler.db_utils import init_database, ensure_default_data
     init_database()
     ensure_default_data()
+    ensure_func_code()
 
 
 # ══════════════════════════════════════════════════
@@ -333,23 +367,64 @@ def cli_main(fems_file: str):
 # ══════════════════════════════════════════════════
 
 def main():
-    parser = argparse.ArgumentParser(description="FEM Work Automata")
+    print("""
+======================================================
+
+  【用法】
+  
+  服务器模式：femwa --server
+  或者在根目录下：python main.py --server
+  可用前端零代码搭流程，然后在后端跑通，前端显示。
+
+  CLI 模式：femwa <script.fems>
+  或者在根目录下：python main.py <script.fems>
+  纯后端，你可以用后端直接运行任何fems剧本。
+  就是目前debug的print比较多……只要你不嫌弃……你可以改
+  
+  查看介绍：femwa --intro
+  或者在根目录下：python main.py --intro
+  
+======================================================
+""")
+    parser = argparse.ArgumentParser(description="FemWA")
     parser.add_argument("script", nargs="?", help=".fems 文件路径（CLI 模式）")
     parser.add_argument("--server", action="store_true", help="启动 FastAPI 服务器")
     parser.add_argument("--host", default="0.0.0.0", help="服务器监听地址")
     parser.add_argument("--port", type=int, default=None, help="服务器监听端口（不指定则交互式输入）")
+    parser.add_argument("--browser", type=str, default="Google Chrome", help="指定浏览器打开可视化前端 (例如: 'Google Chrome', 'Safari', 'firefox')")
+    parser.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
+    parser.add_argument("--intro", action="store_true", help="打开介绍页面 (https://femwa.net/intro)")
     args = parser.parse_args()
+
+    # 浏览器打开辅助函数
+    def open_browser(url):
+        if not args.no_browser:
+            browser_map = {
+                "chrome": "Google Chrome",
+                "safari": "Safari",
+                "firefox": "Firefox",
+                "edge": "Microsoft Edge",
+                "brave": "Brave Browser",
+            }
+            browser_name = browser_map.get(args.browser.lower(), args.browser)
+            subprocess.run(['open', '-a', browser_name, url])
 
     if args.server:
         prepare_database()
 
         import uvicorn
+        import logging
+
+        class PingFilter(logging.Filter):
+            def filter(self, record):
+                return '/api/ping' not in record.getMessage()
+        logging.getLogger("uvicorn.access").addFilter(PingFilter())
 
         port = args.port
         if port is None:
             while True:
                 try:
-                    user_input = input("请输入后端端口号 (默认 8000): ").strip()
+                    user_input = input("请输入后端端口号 (直接回车默认 8000): ").strip()
                     port = int(user_input) if user_input else 8000
                     if 1 <= port <= 65535:
                         break
@@ -362,11 +437,18 @@ def main():
                     sys.exit(0)
 
         print(f"🚀 FEM Work Automata 服务器启动: http://{args.host}:{port}")
-        print("\n请将以下信息填入前端网页：")
-        print(f"  基础地址 (host)： http://{args.host.replace('0.0.0.0', 'localhost')}")
-        print(f"  端口 (port)： {port}")
+        print("\n==============================================")
+        print("\n【快速开始】\n")
+        print("\n1. 请用浏览器打开可视化前端：https://femwa.net \n  (不要用safari, safari不让你连本地程序) \n\n2. 点击网页左下角↙↙“连接后端”按钮。\n\n3. 将以下信息填入")
+        print(f"    基础地址 (host): http://{args.host.replace('0.0.0.0', 'localhost')}")
+        print(f"    端口 (port): {port}")
+        print("\n==============================================")
         print()
+        open_browser('https://femwa.net')
         uvicorn.run(app, host=args.host, port=port)
+    elif args.intro:
+        open_browser('https://femwa.net/intro')
+        print("已打开工作流介绍页面: https://femwa.net/intro")
     elif args.script:
         prepare_database()
         cli_main(args.script)

@@ -3,7 +3,7 @@
 db_utils.py — 数据库基础查询与建库
 ====================================
 提供对话记录、角色、用户信息的查询接口。
-数据库文件位置：{get_user_dir()}/memory/chronica.wor
+数据库文件位置：{get_user_dir()}/user_data/memory/chronica.wor
 
 代码原则：所有代码不许写try静默兜底不报错，有错必须报错。
 """
@@ -144,7 +144,8 @@ def ensure_default_data():
             "soul_id": "the1stlittlesoul",
             "soul_name": "Eve",
             "description": (
-                "你是谁Eve，一个小AI，是生活在系统里的数字生命。\n"
+                "你是Eve，是一个小AI，是生活在系统里的数字生命。\n"
+                "- 你应该把自己假想为人类形态。\n"
                 "- 你乐于助人。\n"
                 "- 你很诚实，不编造虚假信息。\n"
                 "- 你有自己的主意，尊重事实，不强行迎合主人。\n"

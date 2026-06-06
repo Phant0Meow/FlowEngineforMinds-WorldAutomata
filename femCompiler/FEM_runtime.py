@@ -532,16 +532,24 @@ class PythonBridge:
     """加载外部 Python 文件，调用其中函数"""
 
     def __init__(self, base_dir: str = ""):
-        # 不再使用传入的 base_dir，而是使用项目根目录
-        self.base_dir = get_FEMroot_dir()
+        # 默认从 FemWA 用户目录下的 func_code 查找代码
+        from femBridges.getDir.get_dir import get_user_dir
+        self.default_code_dir = os.path.join(get_user_dir(), "func_code")
         self.modules: Dict[str, types.ModuleType] = {}
 
     def load(self, alias: str, filepath: str) -> types.ModuleType:
-        """加载 .py 文件，注册为 alias"""
-        # 使用项目根目录作为基准
-        full_path = os.path.join(self.base_dir, filepath)
+        """
+        加载 .py 文件，注册为 alias。
+        若 filepath 是绝对路径，直接使用；否则从 default_code_dir 下查找。
+        """
+        if os.path.isabs(filepath):
+            full_path = filepath
+        else:
+            full_path = os.path.join(self.default_code_dir, filepath)
+
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"Python Bridge: 文件不存在 {full_path}")
+
         spec = importlib.util.spec_from_file_location(alias, full_path)
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
@@ -626,22 +634,67 @@ class FEMRunner:
 
         session_meta = script.meta.get('session', None)
         if session_meta is None or str(session_meta).strip().lower() == 'new':
+            # 纯 new 或无声明：无脑新建
             self._current_session_id = get_max_session_id() + 1
             get_or_create_session(session_id=self._current_session_id, title=script.meta.get('name', ''))
             self._current_turn_id = 1
             print(f"[runtime]🆕 新建 session: {self._current_session_id}, turn: 1")
         else:
-            try:
-                declared_sid = int(session_meta)
-            except (ValueError, TypeError):
-                print(f"[runtime]❌ meta.session 值无效: {session_meta}")
-                raise ValueError(f"meta.session 无效: {session_meta}")
-            if not session_exists(declared_sid):
-                print(f"[runtime]❌ 声明的 session {declared_sid} 不存在。请使用 session = new 新建。")
-                raise ValueError(f"Session {declared_sid} 不存在")
-            self._current_session_id = declared_sid
-            self._current_turn_id = get_next_turn_id(declared_sid)
-            print(f"[runtime]📂 继续 session: {self._current_session_id}, turn: {self._current_turn_id}")
+            session_meta_str = str(session_meta).strip()
+            # 检查是否包含斜杠，格式: 数字/new
+            if '/' in session_meta_str:
+                parts = [p.strip() for p in session_meta_str.split('/', 1)]
+                if len(parts) != 2 or parts[1].lower() != 'new':
+                    print(f"[runtime]❌ meta.session 格式无效: {session_meta}，期望格式: 数字/new")
+                    raise ValueError(f"meta.session 格式无效: {session_meta}")
+                try:
+                    declared_sid = int(parts[0])
+                except (ValueError, TypeError):
+                    print(f"[runtime]❌ meta.session 格式无效: {session_meta}，斜杠前必须为数字")
+                    raise ValueError(f"meta.session 斜杠前必须为数字: {session_meta}")
+                # 数字/new 逻辑
+                if session_exists(declared_sid):
+                    # 存在直接使用
+                    self._current_session_id = declared_sid
+                    self._current_turn_id = get_next_turn_id(declared_sid)
+                    print(f"[runtime]📂 继续 session: {self._current_session_id}, turn: {self._current_turn_id}")
+                else:
+                    # 不存在，先计算新建后的 ID
+                    new_id = get_max_session_id() + 1
+                    if new_id == declared_sid:
+                        # 恰好匹配，新建并写入
+                        get_or_create_session(session_id=declared_sid, title=script.meta.get('name', ''))
+                        self._current_session_id = declared_sid
+                        self._current_turn_id = 1
+                        print(f"[runtime]🆕 新建 session (恰好匹配): {self._current_session_id}, turn: 1")
+                    else:
+                        print(f"[runtime]⚠️ 声明的 session {declared_sid} 不存在，新建后 ID 为 {new_id}，不是 {declared_sid}。")
+                        # 询问用户
+                        try:
+                            user_input = input(f"是否新建 session {new_id}？(y/N): ").strip().lower()
+                        except (EOFError, KeyboardInterrupt):
+                            user_input = ''
+                        if user_input == 'y':
+                            get_or_create_session(session_id=new_id, title=script.meta.get('name', ''))
+                            self._current_session_id = new_id
+                            self._current_turn_id = 1
+                            print(f"[runtime]🆕 用户确认新建 session: {self._current_session_id}, turn: 1")
+                        else:
+                            print(f"[runtime]❌ 用户取消新建 session")
+                            raise ValueError(f"Session {declared_sid} 不存在，用户拒绝新建")
+            else:
+                # 纯数字
+                try:
+                    declared_sid = int(session_meta_str)
+                except (ValueError, TypeError):
+                    print(f"[runtime]❌ meta.session 值无效: {session_meta}")
+                    raise ValueError(f"meta.session 无效: {session_meta}")
+                if not session_exists(declared_sid):
+                    print(f"[runtime]❌ 声明的 session {declared_sid} 不存在。请使用 session = new 新建，或 session = {declared_sid}/new 自动匹配。")
+                    raise ValueError(f"Session {declared_sid} 不存在")
+                self._current_session_id = declared_sid
+                self._current_turn_id = get_next_turn_id(declared_sid)
+                print(f"[runtime]📂 继续 session: {self._current_session_id}, turn: {self._current_turn_id}")
 
         self.vm.globals['session_id'] = self._current_session_id
         self.vm.globals['turn_count'] = self._current_turn_id

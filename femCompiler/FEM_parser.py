@@ -1473,7 +1473,7 @@ def parse_script(text: str, base_dir: str = ".") -> Script:
             db_path = db_path[6:-1]
 
         if not os.path.isabs(db_path):
-            user_dir = get_user_dir()
+            user_dir = os.path.join(get_user_dir(), "user_data")
             # 防止重复拼接 user_dir 的最后一级目录名
             last_component = os.path.basename(user_dir.rstrip('/\\'))
             if last_component and db_path.startswith(last_component + os.sep):
