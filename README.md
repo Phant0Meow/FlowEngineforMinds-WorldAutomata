@@ -90,10 +90,10 @@ Fem有网页端零代码生成工作流。比如你想要好几个AI群聊，网
 ## 【快速开始！】 
 所以这个操作步骤够不够无脑？↓↓↓
 
-1. 下载本项目: `pip install femwa`
-2. 运行后端: `femwa --server`
-3. 直接回车（用默认端口`8000`）。
-4. 进入FemWA前端网页工具[femwa.net](https://femwa.net) 
+1. 下载本项目: pip install femwa
+2. 运行后端: femwa --server
+3. 直接回车，用默认端口8000。
+4. 进入我们的网站[femwa.net](https://femwa.net) 
 5. 点页面左下角↙↙【连接后端】按钮，按【测试连接】，确认前后端连接成功，按【保存并连接】。
 6. 左下角输入API key. 
    - 你可以去申请一个临时API key来测试这个项目，相信我，它值得，可好玩了。
@@ -104,9 +104,9 @@ Fem有网页端零代码生成工作流。比如你想要好几个AI群聊，网
 ```fems
 meta:
   id = 000LuxFiat
-  name = 养在数据库的小灵魂
+  name = 生活在数据库的小灵魂
   owner = 001
-  session = 1
+  session = 1 / new
 
 actors:
   ai @Eve = soul:the1stlittlesoul
@@ -114,7 +114,7 @@ actors:
   human @我 = soul:0, source:001
 
 code:
-  sleep = file:"user_data/projects/fiat/wait.py"  // 外接Python函数, 方便你扩展
+  sleep = file:"wait.py"  // 外接Python函数, 方便你扩展
 
 action EveMove @ai(@Eve):
   prompt: |
@@ -129,14 +129,13 @@ action CatMove @ai(@猫):
   scope: [@Eve, @猫, @我]
 
 action input @human(@我):
-  prompt: |
-    和Eve聊点什么？
+  prompt: 和Eve聊点什么？
   scope: [@Eve, @猫, @我]
 
 action wait10 @func(sleep.wait_10):
 
 mainflow:
-  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]    // 比较像mermaid语法。最后指回到[input]节点形成一个循环。
+  [START] -> [input]:input -> EveMove -> wait10 -> CatMove -> [input]    // 比较像mermaid语法。可以最后指回到[input]节点形成一个循环。
 ```
 8. 按“文本生图”按钮。
 9. 按页面上方“运行”。
@@ -287,10 +286,10 @@ Aha! How about using Fem to quickly validate your Agent Harness flow designs? Wh
 ## [ Quick Start! ]
 Is this brain-dead simple enough? ↓↓↓
 
-1. Clone the project: `pip install femwa`
+1. Clone the project: pip install femwa
 2. Start the backend: `femwa --server`
-3. just press Enter. (use the default port `8000`)
-4. Go to FemWA web tool [https://femwa.net](https://femwa.net)
+3. just press Enter, use the default port 8000.
+4. Go to [https://femwa.net](https://femwa.net)
 5. Click the 【连接后端】 button in the bottom-left corner ↙↙, click 【测试连接】, confirm the frontend and backend are connected successfully, then click 【保存并连接】.
 6. Enter your API key in the bottom-left corner.
    - You can go grab a temporary API key to test this project. Trust me, it's worth it — really fun to play with.
@@ -302,9 +301,9 @@ Is this brain-dead simple enough? ↓↓↓
 ```fems
 meta:
   id = 000LuxFiat
-  name = Little Soul Raised in the Database
+  name = Little Soul living in the Database
   owner = 001
-  session = 1
+  session = 1 / new
 
 actors:
   ai @Eve = soul:the1stlittlesoul
@@ -312,7 +311,7 @@ actors:
   human @Me = soul:0, source:001
 
 code:
-  sleep = file:"user_data/projects/fiat/wait.py"  // External Python function — easy to extend
+  sleep = file:"wait.py"    // External Python function — easy to extend
 
 action EveMove @ai(@Eve):
   prompt: |
@@ -327,8 +326,7 @@ action CatMove @ai(@Cat):
   scope: [@Eve, @Cat, @Me]
 
 action input @human(@Me):
-  prompt: |
-    Chat with Eve about something?
+  prompt: Chat with Eve about something?
   scope: [@Eve, @Cat, @Me]
 
 action wait10 @func(sleep.wait_10):
