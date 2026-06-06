@@ -4,31 +4,29 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "femwa"
-version = "1.1.0"
+version = "1.1.9.post3"
 description = "FlowEngineforMinds - 用写剧本的方式编排多智能体世界"
 readme = "README.md"
-license = {text = "Apache-2.0"}
-requires-python = ">=3.10"
+license = "Apache-2.0"
+requires-python = ">=3.6"
 authors = [
-    {name = "Junyue", email = "jovielher@163.com"}
+    {name = "Junyue (求职大模型方向，求内推 QAQ)", email = "jovielher@163.com"}
 ]
 keywords = ["agent", "workflow", "multi-agent", "llm", "orchestration"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Operating System :: OS Independent",
 ]
 dependencies = [
     "fastapi>=0.100.0",
     "uvicorn>=0.23.0",
     "requests>=2.31.0",
 ]
+dynamic = ["scripts"]
 
 [project.urls]
-Homepage = "https://github.com/Phant0Meow/FlowEngineforMinds-WorldAutomata"
-
-[project.scripts]
-fem = "main:main"
+Homepage = "https://github.com/Phant0Meow/FemWA"
