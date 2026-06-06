@@ -394,6 +394,7 @@ def main():
     parser.add_argument("--browser", type=str, default="Google Chrome", help="指定浏览器打开可视化前端 (例如: 'Google Chrome', 'Safari', 'firefox')")
     parser.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
     parser.add_argument("--intro", action="store_true", help="打开介绍页面 (https://femwa.net/intro)")
+    parser.add_argument("--doc", action="store_true", help="打开文档页面 (https://femwa.net/document)")
     args = parser.parse_args()
 
     # 浏览器打开辅助函数
@@ -448,7 +449,10 @@ def main():
         uvicorn.run(app, host=args.host, port=port)
     elif args.intro:
         open_browser('https://femwa.net/intro')
-        print("已打开工作流介绍页面: https://femwa.net/intro")
+        print("已打开FemWA介绍页面: https://femwa.net/intro")
+    elif args.doc:
+        open_browser('https://femwa.net/document')
+        print("已打开FemWA文档页面: https://femwa.net/document")
     elif args.script:
         prepare_database()
         cli_main(args.script)
